@@ -1,53 +1,26 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <fcntl.h>
 
-ssize_t read_textfile(const char *filename, size_t letters);
+int append_text_to_file(const char *filename, char *text_content);
+size_t _strlen(const char *src);
+int create_file(const char *filename, char *text_content);
 int _putchar(char c); 
 
 int main(int ac, char **av)
 {
-	ssize_t n;
 
-	if (ac != 2)
-			    
-        dprintf(2, "Usage: %s filename\n", av[0]);
-	exit(1);
-						        
-	n = read_textfile(av[1], 114);
-	printf("\n(printed chars: %li)\n", n);
-	n = read_textfile(av[1], 1024);
-	printf("\n(printed chars: %li)\n", n);
-	return (0);
-}
+        int res;
 
-ssize_t read_textfile(const char *filename, size_t letters)
-{
-	int fd;
-	ssize_t  total_read;
-	char *buff;
-	
-
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
+	if (ac != 3)
 	{
-		perror("Failed to open file");
-		return 0;
+		dprintf(2, "Usage: %s filename text\n", av[0]);
+		exit(1);
 	}
-	buff = malloc(sizeof(char) * letters);
-	total_read = read(fd, buff, letters);
-
-	if (total_read == -1)
-	{
-		perror("Failed to read file");    
-		close(fd);
-		return (0);
-	}
-	write(STDOUT_FILENO, buff, total_read);
-
-	free(buff);
-	close(fd);
-	return (total_read);
+	        res = append_text_to_file(av[1], av[2]);
+		printf("-> %i)\n", res);
+	        return (0);
 }
-
